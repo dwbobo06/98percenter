@@ -1139,7 +1139,7 @@ function getScoreText() {
   const count = scores.filter(s => s === true).length;
   const grid = scores.map(s => emojiMap[s]).join('');
   const msg = scoreMessages[count];
-  return `98 Percenter — ${dateStr}\n${grid}\n"${msg}"\n98percenter.com`;
+  return `98 Percenter — ${dateStr}\n${grid}\n98percenter.com`;
 }
 
 function shareResults() {
@@ -1321,8 +1321,35 @@ function getTodayKeyShort() {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 
-function loadQuestions() {
-  useFallbackQuestions();
+async function loadQuestions() {
+  try {
+    const url = GIST_URL + "?v=" + getTodayKeyShort();
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error("fetch failed");
+    const data = await resp.json();
+    const today = getTodayKeyShort();
+    const todayData = data[today];
+
+    if (!todayData || !todayData.rounds || todayData.rounds.length < 4) {
+      useFallbackQuestions();
+      return;
+    }
+
+    QUESTIONS = todayData.rounds;
+    applyQuestions(QUESTIONS);
+    setDates();
+    buildMap();
+    buildWheel();
+
+    const btn = document.getElementById("start-btn");
+    if (btn) { btn.disabled = false; btn.style.opacity = "1"; btn.textContent = "Start"; }
+
+    restoreSession();
+
+  } catch(e) {
+    console.warn("Gist fetch failed, using fallback:", e);
+    useFallbackQuestions();
+  }
 }
 
 
