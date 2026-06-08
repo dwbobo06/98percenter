@@ -4,6 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>98 Percenter — Daily Aggie Trivia</title>
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QSR6JR78E8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QSR6JR78E8');
+</script>
+
+<!-- Open Graph / Link Preview -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://98percenter.com">
+<meta property="og:title" content="98 Percenter — Daily A&M Trivia">
+<meta property="og:site_name" content="98 Percenter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="98 Percenter — Daily A&M Trivia">
+
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js"></script>
 <style>
@@ -601,13 +618,7 @@
 </style>
 </head>
 <body>
-<script>
-window.onerror = function(msg, src, line, col, err) {
-  const btn = document.getElementById('start-btn');
-  if (btn) { btn.textContent = 'ERROR: ' + msg + ' (line ' + line + ')'; btn.style.fontSize = '10px'; btn.disabled = false; }
-  return false;
-};
-</script>
+
 
 
 <!-- HOW TO PLAY MODAL -->
@@ -615,10 +626,9 @@ window.onerror = function(msg, src, line, col, err) {
   <div class="modal">
     <div class="modal-title">How to Play</div>
     <div class="modal-body">
-      <p><strong>4 rounds.</strong> Every question is about Texas A&M sports history — players, places, moments.</p>
-      <p><strong>One shot.</strong> No second chances. Lock in your answer when you're ready.</p>
-      <p>Questions rotate formats — map clicks, number wheels, head-to-head picks, and free response.</p>
-      <p><strong>A new puzzle drops every day at midnight CT.</strong> Don't miss it.</p>
+      <p><strong>4 rounds.</strong> Each question is about a player, place, or moment in Texas A&M sports history.</p>
+      <p><strong>One shot per question.</strong> No second chances. Lock in your answer when you're ready.</p>
+      <p><strong>A new round of trivia drops every day at midnight central time.</strong> Don't miss it.</p>
     </div>
     <button class="modal-close" onclick="document.getElementById('howToModal').classList.remove('open')">Close</button>
   </div>
@@ -801,6 +811,7 @@ function setDates() {
 }
 
 function startGame() {
+  gtag('event', 'game_started');
   updateDots();
   goToScreen('screen-q1');
 }
@@ -1100,6 +1111,12 @@ function showResult(badgeId, correct, text) {
   const badge = document.getElementById(badgeId);
   badge.textContent = text;
   badge.classList.add(correct ? 'correct-badge' : 'incorrect-badge', 'show');
+  // GA event
+  const roundNum = badgeId.replace('q','').replace('-badge','');
+  gtag('event', 'question_answered', {
+    'round': roundNum,
+    'result': correct ? 'correct' : 'incorrect'
+  });
 }
 
 /* ============ RESULTS ============ */
@@ -1116,6 +1133,9 @@ const emojiMap = { true: '🟩', false: '🟥', null: '⬛' };
 function buildResults() {
   markTodayComplete();
   let count = scores.filter(s => s === true).length;
+  gtag('event', 'game_completed', {
+    'score': count + '/4'
+  });
   document.getElementById('score-message').textContent = scoreMessages[count];
 
   const streak = getStreakState();
@@ -1143,6 +1163,10 @@ function getScoreText() {
 }
 
 function shareResults() {
+  const count = scores.filter(s => s === true).length;
+  gtag('event', 'share_clicked', {
+    'score': count + '/4'
+  });
   const text = getScoreText();
   if (navigator.clipboard) {
     navigator.clipboard.writeText(text).then(() => {
@@ -1489,12 +1513,7 @@ function showNoQuestion() {
   document.getElementById('screen-noquestion').classList.add('active');
 }
 
-try {
-  loadQuestions();
-} catch(e) {
-  const btn = document.getElementById('start-btn');
-  if (btn) { btn.textContent = 'ERR: ' + e.message; btn.style.fontSize = '10px'; btn.disabled = false; }
-}
+loadQuestions();
 </script>
 
 <!-- SCREEN: NO QUESTION -->
