@@ -1149,6 +1149,19 @@ function buildWheelForRound(n, list, wrapper) {
     e.preventDefault();
   }, {passive:false});
   wrapper.addEventListener('touchend', () => { wheelState[n].dragging = false; finalSnapWheel(n); });
+
+  // Mouse wheel / trackpad scroll support
+  wrapper.addEventListener('wheel', e => {
+    e.preventDefault();
+    const ITEM_HEIGHT = 56;
+    const NUM_ITEMS = 100;
+    const delta = e.deltaY > 0 ? -ITEM_HEIGHT : ITEM_HEIGHT;
+    wheelState[n].y += delta;
+    const max = 0, min = -(NUM_ITEMS-1)*ITEM_HEIGHT;
+    if (wheelState[n].y > max) wheelState[n].y = max;
+    if (wheelState[n].y < min) wheelState[n].y = min;
+    finalSnapWheel(n);
+  }, { passive: false });
 }
 
 function setWheelPos(n, y) {
