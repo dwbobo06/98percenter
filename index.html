@@ -1486,29 +1486,58 @@ function restoreRound(n) {
 const GIST_URL = 'https://gist.githubusercontent.com/dwbobo06/7b3d43dbbe8b3b65945f6fe9ea1d4558/raw/0771a93da4f0496048c55d8eb438e497c069f323/the98_questions.json';
 
 async function loadQuestions() {
-  try {
-    const url = GIST_URL + "?v=" + getTodayKeyShort();
+  const GIST_BASE = 'https://gist.githubusercontent.com/dwbobo06/7b3d43dbbe8b3b65945f6fe9ea1d4558/raw/';
+  const GIST_HASH_URL = GIST_BASE + '0771a93da4f0496048c55d8eb438e497c069f323/the98_questions.json';
+  const GIST_CACHEBUST_URL = GIST_BASE + 'the98_questions.json?v=' + getTodayKeyShort() + '&r=' + Math.random().toString(36).slice(2);
+
+  const today = getTodayKeyShort();
+
+  async function tryFetch(url) {
     const resp = await fetch(url);
-    if (!resp.ok) throw new Error("fetch failed");
+    if (!resp.ok) throw new Error('fetch failed');
     const data = await resp.json();
-    const today = getTodayKeyShort();
     const todayData = data[today];
-    if (!todayData || !todayData.rounds || todayData.rounds.length < 4) {
-      useFallbackQuestions(); return;
-    }
-    QUESTIONS = todayData.rounds;
-    applyQuestions(QUESTIONS);
-    setDates();
-    buildAllMaps();
-    buildAllWheels();
-    const btn = document.getElementById("start-btn");
-    if (btn) { btn.disabled = false; btn.style.opacity = "1"; btn.textContent = "Start"; }
-    restoreSession();
-  } catch(e) {
-    console.warn("Gist fetch failed, using fallback:", e);
-    useFallbackQuestions();
+    if (!todayData || !todayData.rounds || todayData.rounds.length < 4) throw new Error('no questions for today');
+    return todayData;
   }
+
+  let todayData = null;
+
+  // Strategy 1: cache-busted hashless URL
+  try {
+    todayData = await tryFetch(GIST_CACHEBUST_URL);
+    console.log('Loaded via cache-bust URL');
+  } catch(e) {
+    console.warn('Cache-bust fetch failed:', e.message);
+  }
+
+  // Strategy 2: specific commit hash URL
+  if (!todayData) {
+    try {
+      todayData = await tryFetch(GIST_HASH_URL);
+      console.log('Loaded via hash URL');
+    } catch(e) {
+      console.warn('Hash URL fetch failed:', e.message);
+    }
+  }
+
+  // Strategy 3: fallback hardcoded questions
+  if (!todayData) {
+    console.warn('All fetches failed, using fallback questions');
+    useFallbackQuestions();
+    return;
+  }
+
+  QUESTIONS = todayData.rounds;
+  applyQuestions(QUESTIONS);
+  setDates();
+  buildAllMaps();
+  buildAllWheels();
+  const btn = document.getElementById("start-btn");
+  if (btn) { btn.disabled = false; btn.style.opacity = "1"; btn.textContent = "Start"; }
+  restoreSession();
 }
+
 
 function useFallbackQuestions() {
   QUESTIONS = [
