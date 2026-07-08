@@ -1266,16 +1266,17 @@ function lockInFree(n) {
   document.getElementById(`q${n}-lockin`).style.display = 'none';
 
   const lower = val.toLowerCase().replace(/\s+/g, '');
-  const lastName = ANSWERS[`q${n}`].lastName.toLowerCase();
+  const lastName = ANSWERS[`q${n}`].lastName.toLowerCase().replace(/\s+/g, '');
   const hasLastName = lower.includes(lastName);
   const firstName = ANSWERS[`q${n}`].name.split(' ')[0].toLowerCase().replace(/\s+/g,'');
   const firstNameOnly = lower === firstName && !hasLastName;
 
   let correct = false;
   if (hasLastName && !firstNameOnly) {
-    const fuse = new Fuse([ANSWERS[`q${n}`].name, ANSWERS[`q${n}`].lastName], { threshold: 0.4 });
-    const result = fuse.search(val);
-    correct = result.length > 0 || hasLastName;
+    correct = true;
+  } else if (!firstNameOnly) {
+    const fuse = new Fuse([ANSWERS[`q${n}`].name, ANSWERS[`q${n}`].lastName], { threshold: 0.3 });
+    correct = fuse.search(val).length > 0;
   }
 
   scores[n-1] = correct;
@@ -1543,27 +1544,27 @@ function useFallbackQuestions() {
   QUESTIONS = [
     {
       type: "wheel",
-      question: "Ryan Targac wore this number for the 2024 A&M Baseball team.",
-      answer: 12,
-      blurb: "The Hallettsville Hammer wore #12 for the Aggies."
+      question: "Number of freshmen to appear in 20+ games for Aggie Baseball in 2026.",
+      answer: 5,
+      blurb: "Five - Nico Partida, Jorian Wilson, Boston Kellner, Hunter Vincent, and Cole Hubert."
     },
     {
-      type: "fifty_fifty",
-      question: "Which program has A&M Football played more games against all-time?",
-      option_a: "Auburn", option_b: "Nebraska", answer: "A",
-      blurb: "Auburn - the Aggies have played the Tigers 16 times, compared with 14 games against Nebraska."
+      type: "wheel",
+      question: "Number of players drafted from A&M in the 2026 NFL Draft.",
+      answer: 10,
+      blurb: "Ten - Concepcion, Bisontis, Howell, Boerkircher, Onyedim, Regis, Zuhn, Lee, Crownover, and Reed-Adams."
     },
     {
-      type: "map_us",
-      question: "Bucky McMillan began his career coaching high school basketball in this state:",
-      answer_abbr: "AL", answer_name: "Alabama",
-      blurb: "Bucky Ball got its start just outside Birmingham, AL."
+      type: "wheel",
+      question: "Andersson Garcia's number while playing for Aggie Basketball.",
+      answer: 11,
+      blurb: "Andy wore #11 as an Aggie."
     },
     {
-      type: "free_response",
-      question: "This Argyle, TX native was the second leading passer on the 2018 Aggie Football team:",
-      answer_full: "Nick Starkel", answer_last: "starkel",
-      blurb: "Nick Starkel played three seasons for the Aggies before transferring to Arkansas, and eventually San Jose State."
+      type: "wheel",
+      question: "Number of National Championships won by Aggie Women's Basketball.",
+      answer: 1,
+      blurb: "Aggie WBB won their first and only NCAAW title under Gary Blair in 2011."
     }
   ];
   applyQuestions(QUESTIONS);
