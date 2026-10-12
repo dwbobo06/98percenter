@@ -1266,16 +1266,17 @@ function lockInFree(n) {
   document.getElementById(`q${n}-lockin`).style.display = 'none';
 
   const lower = val.toLowerCase().replace(/\s+/g, '');
-  const lastName = ANSWERS[`q${n}`].lastName.toLowerCase();
+  const lastName = ANSWERS[`q${n}`].lastName.toLowerCase().replace(/\s+/g, '');
   const hasLastName = lower.includes(lastName);
   const firstName = ANSWERS[`q${n}`].name.split(' ')[0].toLowerCase().replace(/\s+/g,'');
   const firstNameOnly = lower === firstName && !hasLastName;
 
   let correct = false;
   if (hasLastName && !firstNameOnly) {
-    const fuse = new Fuse([ANSWERS[`q${n}`].name, ANSWERS[`q${n}`].lastName], { threshold: 0.4 });
-    const result = fuse.search(val);
-    correct = result.length > 0 || hasLastName;
+    correct = true;
+  } else if (!firstNameOnly) {
+    const fuse = new Fuse([ANSWERS[`q${n}`].name, ANSWERS[`q${n}`].lastName], { threshold: 0.3 });
+    correct = fuse.search(val).length > 0;
   }
 
   scores[n-1] = correct;
