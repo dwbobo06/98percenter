@@ -52,6 +52,7 @@
   .screen {
     display: none;
     min-height: 100vh;
+    min-height: 100dvh;
     flex-direction: column;
     align-items: center;
     background: var(--maroon);
@@ -211,7 +212,8 @@
 
   /* ===== FOOTER ===== */
   .site-footer { width: 100%; text-align: center; padding: 20px 20px 24px; }
-  .site-footer a {
+  .contact-inline { text-align: center; margin-top: 28px; }
+  .site-footer a, .contact-inline a {
     font-family: 'Oswald', sans-serif;
     font-size: 11px;
     letter-spacing: 2px;
@@ -221,7 +223,7 @@
     border-bottom: 1px solid rgba(255,255,255,0.2);
     padding-bottom: 2px;
   }
-  .site-footer a:hover { color: rgba(255,255,255,0.7); }
+  .site-footer a:hover, .contact-inline a:hover { color: rgba(255,255,255,0.7); }
 
   /* ===== MODAL ===== */
   .modal-overlay {
@@ -658,9 +660,9 @@
       <div class="home-date" id="home-date"></div>
       <button class="btn-primary" id="start-btn" onclick="startGame()" disabled style="opacity:0.5">Loading...</button>
       <button class="how-to-link" onclick="document.getElementById('howToModal').classList.add('open')">How to Play</button>
+      <div class="contact-inline"><a href="mailto:contact@98percenter.com?subject=98%20Percenter%20feedback" onclick="if(window.gtag)gtag('event','contact_clicked')">Contact Us</a></div>
     </div>
   </div>
-  <div class="site-footer"><a href="mailto:contact@98percenter.com?subject=98%20Percenter%20feedback" onclick="if(window.gtag)gtag('event','contact_clicked')">Contact Us</a></div>
 </div>
 
 <!-- SCREEN Q1 -->
@@ -709,7 +711,6 @@
     <button class="btn-lockin" id="q1-lockin" disabled>Lock In</button>
     <button class="btn-next" id="q1-next" style="display:none" onclick="goToScreen('screen-q2')">Next Round →</button>
   </div>
-  <div class="site-footer"><a href="mailto:contact@98percenter.com?subject=98%20Percenter%20feedback" onclick="if(window.gtag)gtag('event','contact_clicked')">Contact Us</a></div>
 </div>
 
 <!-- SCREEN Q2 -->
@@ -758,7 +759,6 @@
     <button class="btn-lockin" id="q2-lockin" disabled>Lock In</button>
     <button class="btn-next" id="q2-next" style="display:none" onclick="goToScreen('screen-q3')">Next Round →</button>
   </div>
-  <div class="site-footer"><a href="mailto:contact@98percenter.com?subject=98%20Percenter%20feedback" onclick="if(window.gtag)gtag('event','contact_clicked')">Contact Us</a></div>
 </div>
 
 <!-- SCREEN Q3 -->
@@ -807,7 +807,6 @@
     <button class="btn-lockin" id="q3-lockin" disabled>Lock In</button>
     <button class="btn-next" id="q3-next" style="display:none" onclick="goToScreen('screen-q4')">Next Round →</button>
   </div>
-  <div class="site-footer"><a href="mailto:contact@98percenter.com?subject=98%20Percenter%20feedback" onclick="if(window.gtag)gtag('event','contact_clicked')">Contact Us</a></div>
 </div>
 
 <!-- SCREEN Q4 -->
@@ -856,7 +855,6 @@
     <button class="btn-lockin" id="q4-lockin" disabled>Lock In</button>
     <button class="btn-next" id="q4-next" style="display:none" onclick="goToScreen('screen-results')">See Results →</button>
   </div>
-  <div class="site-footer"><a href="mailto:contact@98percenter.com?subject=98%20Percenter%20feedback" onclick="if(window.gtag)gtag('event','contact_clicked')">Contact Us</a></div>
 </div>
 
 <!-- SCREEN 6: RESULTS -->
@@ -886,9 +884,9 @@
         <button class="btn-share" onclick="shareResults()">Copy & Share</button>
         <div class="share-confirm" id="share-confirm">Copied to clipboard ✓</div>
       </div>
+      <div class="contact-inline"><a href="mailto:contact@98percenter.com?subject=98%20Percenter%20feedback" onclick="if(window.gtag)gtag('event','contact_clicked')">Contact Us</a></div>
     </div>
   </div>
-  <div class="site-footer"><a href="mailto:contact@98percenter.com?subject=98%20Percenter%20feedback" onclick="if(window.gtag)gtag('event','contact_clicked')">Contact Us</a></div>
 </div>
 
 <script>
